@@ -1,0 +1,465 @@
+<!doctype html>
+<!--
+  OD web-prototype seed.
+
+  Copy this file to <project>/index.html, then fill `<main id="content">` by
+  pasting blocks from `references/layouts.md`. Every class referenced in
+  layouts.md is defined here — DO NOT remove unused ones unless you also
+  remove their callers, and DO NOT invent new global classes (use inline
+  style="…" for one-off tweaks).
+
+  Theme tokens at the top of `<style>` are the *only* place to set palette
+  and type. They map cleanly onto a DESIGN.md — when an active design system
+  is injected, swap these six variables and everything reflows.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Anthony Corbell — Operations, Communication &amp; Innovation</title>
+  <style>
+    /* ─── tokens ─────────────────────────────────────────────────────────
+       Six variables. Bind them to the active DESIGN.md and stop.
+       Do not introduce raw hex anywhere else in this file. */
+    :root {
+      --bg:      oklch(18% 0.012 90);   /* page background — never #fff */
+      --surface: oklch(23% 0.014 90);   /* cards, modals, raised areas */
+      --fg:      oklch(94% 0.015 90);   /* primary text — never #000 */
+      --muted:   oklch(76% 0.018 90);   /* secondary text, captions */
+      --border:  oklch(42% 0.025 85);   /* hairlines, dividers */
+      --accent:  oklch(78% 0.09 85);   /* one accent — used at most 2× per screen */
+
+      /* derived — do not change */
+      --accent-soft: color-mix(in oklch, var(--accent) 14%, transparent);
+      --fg-soft:     color-mix(in oklch, var(--fg) 6%, transparent);
+
+      /* type — display = serif (default), body = sans, mono for numerics */
+      --font-display: Georgia, 'Times New Roman', serif;
+      --font-body:    'Segoe UI', system-ui, sans-serif;
+      --font-mono:    Consolas, 'Courier New', monospace;
+
+      /* scale — clamp() so it works at 1280, 1440, 1920 without media queries */
+      --fs-h1: clamp(44px, 6vw, 76px);
+      --fs-h2: clamp(32px, 4vw, 48px);
+      --fs-h3: 22px;
+      --fs-lead: 19px;
+      --fs-body: 16px;
+      --fs-meta: 13px;
+
+      /* spacing — 8-point grid */
+      --gap-xs: 8px;
+      --gap-sm: 12px;
+      --gap-md: 20px;
+      --gap-lg: 32px;
+      --gap-xl: 56px;
+      --gap-2xl: 96px;
+      --container: 1120px;
+      --gutter: 32px;
+
+      --radius: 10px;
+      --radius-lg: 16px;
+    }
+
+    /* ─── reset & base ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: var(--fs-body);
+      line-height: 1.55;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
+    p { text-wrap: pretty; }
+    h1, h2, h3, h4 { text-wrap: balance; }
+
+    /* ─── layout primitives ─────────────────────────────────────────── */
+    .container {
+      max-width: var(--container);
+      margin-inline: auto;
+      padding-inline: var(--gutter);
+    }
+    .section {
+      padding-block: clamp(48px, 8vw, var(--gap-2xl));
+    }
+    .section + .section { border-top: 1px solid var(--border); }
+    .stack { display: flex; flex-direction: column; }
+    .stack > * + * { margin-top: var(--gap-md); }
+    .row { display: flex; align-items: center; gap: var(--gap-md); }
+    .row-between { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-md); }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--gap-lg); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap-lg); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap-md); }
+    .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: var(--gap-xl); align-items: start; }
+    .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: var(--gap-xl); align-items: start; }
+    @media (max-width: 920px) {
+      .grid-2, .grid-3, .grid-4, .grid-2-1, .grid-1-2 { grid-template-columns: 1fr; }
+    }
+
+    /* ─── type ──────────────────────────────────────────────────────── */
+    .h1, h1 { font-family: var(--font-display); font-size: var(--fs-h1); line-height: 1.04; letter-spacing: -0.02em; margin: 0; }
+    .h2, h2 { font-family: var(--font-display); font-size: var(--fs-h2); line-height: 1.1; letter-spacing: -0.015em; margin: 0; }
+    .h3, h3 { font-size: var(--fs-h3); font-weight: 600; line-height: 1.3; letter-spacing: -0.005em; margin: 0; }
+    .lead   { font-size: var(--fs-lead); line-height: 1.55; color: var(--muted); max-width: 60ch; margin: 0; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 var(--gap-md);
+    }
+    .meta { font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--muted); }
+    .num  { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+    /* ─── chrome: nav + footer ──────────────────────────────────────── */
+    .topnav {
+      position: sticky; top: 0; z-index: 10;
+      background: color-mix(in oklch, var(--bg) 92%, transparent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .topnav-inner { display: flex; align-items: center; justify-content: space-between; padding-block: 14px; }
+    .topnav .logo { font-family: var(--font-display); font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
+    .topnav nav { display: flex; gap: var(--gap-lg); }
+    .topnav nav a { font-size: 14px; color: var(--muted); }
+    .topnav nav a:hover { color: var(--fg); }
+    .pagefoot { padding-block: var(--gap-xl); color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); }
+    .pagefoot .row-between { flex-wrap: wrap; gap: var(--gap-md); }
+
+    /* ─── buttons ───────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 20px;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -0.005em;
+      transition: transform 0.05s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--accent); color: var(--surface); border-color: var(--accent); }
+    .btn-primary:hover { background: color-mix(in oklch, var(--accent) 88%, black); }
+    .btn-secondary { background: transparent; color: var(--fg); border-color: var(--border); }
+    .btn-secondary:hover { border-color: var(--fg); }
+    .btn-ghost { background: transparent; color: var(--fg); border-color: transparent; padding-inline: 8px; }
+    .btn-ghost:hover { color: var(--accent); }
+    .btn-arrow::after { content: '→'; transition: transform 0.15s ease; }
+    .btn-arrow:hover::after { transform: translateX(2px); }
+
+    /* ─── card / surface ────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+    }
+    .card-flat { background: transparent; border: 0; padding: 0; }
+    .card-rule { background: transparent; border: 0; border-top: 1px solid var(--fg); padding: 24px 0 0; border-radius: 0; }
+
+    /* ─── feature cell (icon + h3 + p) ──────────────────────────────── */
+    .feature .feature-mark {
+      width: 36px; height: 36px;
+      display: grid; place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--accent);
+      margin-bottom: var(--gap-md);
+    }
+    .feature .feature-mark svg { width: 18px; height: 18px; }
+    .feature h3 { margin-bottom: 6px; }
+    .feature p  { margin: 0; color: var(--muted); font-size: 15px; }
+
+    /* ─── stat (big number + label) ─────────────────────────────────── */
+    .stat .stat-num {
+      font-family: var(--font-display);
+      font-size: clamp(56px, 8vw, 96px);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .stat .stat-label { color: var(--muted); font-size: 14px; margin-top: 8px; max-width: 24ch; }
+    .stat .stat-unit  { font-size: 0.5em; opacity: 0.7; margin-left: 2px; }
+
+    /* ─── quote / testimonial ───────────────────────────────────────── */
+    .quote {
+      font-family: var(--font-display);
+      font-size: clamp(24px, 2.6vw, 32px);
+      line-height: 1.32;
+      letter-spacing: -0.01em;
+      max-width: 28ch;
+    }
+    .quote-author { color: var(--muted); font-size: 14px; margin-top: var(--gap-md); }
+    .quote-mark   {
+      font-family: var(--font-display);
+      font-size: 140px; line-height: 0.7;
+      color: var(--accent); opacity: 0.18;
+      margin-bottom: -28px;
+    }
+
+    /* ─── pill / badge / tag ────────────────────────────────────────── */
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .tag {
+      display: inline-flex; align-items: center;
+      padding: 4px 10px;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12px;
+    }
+
+    /* ─── form field ────────────────────────────────────────────────── */
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 13px; color: var(--muted); }
+    .input, .textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--fg);
+      font: inherit;
+      font-size: 15px;
+    }
+    .input:focus, .textarea:focus {
+      outline: 2px solid var(--accent-soft);
+      border-color: var(--accent);
+    }
+    .textarea { min-height: 96px; resize: vertical; line-height: 1.55; }
+
+    /* ─── table (data-style, no chrome) ─────────────────────────────── */
+    .ds-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .ds-table th, .ds-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+    .ds-table th { color: var(--muted); font-weight: 500; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+    .ds-table tbody tr:hover { background: var(--fg-soft); }
+    .ds-table .num-col { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+
+    /* ─── image placeholder (DS-tinted block, never broken <img>) ──── */
+    .ph-img {
+      background:
+        linear-gradient(135deg, var(--accent-soft), var(--fg-soft)),
+        var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      aspect-ratio: 16 / 10;
+      display: grid; place-items: center;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+    .ph-img.square    { aspect-ratio: 1 / 1; }
+    .ph-img.portrait  { aspect-ratio: 3 / 4; }
+    .ph-img.wide      { aspect-ratio: 16 / 9; }
+    .content-img {
+      display: block;
+      max-width: 100%;
+      max-height: min(70vh, 720px);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      justify-self: center;
+      border-radius: var(--radius-lg);
+    }
+
+    /* ─── divider ───────────────────────────────────────────────────── */
+    .rule  { border: 0; border-top: 1px solid var(--border); margin: 0; }
+    .rule-strong { border: 0; border-top: 1px solid var(--fg); margin: 0; }
+
+    /* ─── hero variants used by layouts.md ──────────────────────────── */
+    .hero          { padding-block: clamp(80px, 12vw, 160px); }
+    .hero-center   { text-align: center; max-width: 32ch; margin-inline: auto; }
+    .hero h1       { margin-bottom: var(--gap-md); }
+    .hero .lead    { margin-bottom: var(--gap-lg); }
+    .hero-cta      { display: inline-flex; gap: var(--gap-sm); flex-wrap: wrap; }
+    .hero-center .hero-cta { justify-content: center; }
+    .hero-split    { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-2xl); align-items: center; }
+    @media (max-width: 920px) { .hero-split { grid-template-columns: 1fr; } }
+
+    /* ─── log row (newsletter, blog list, changelog) ────────────────── */
+    .log-row { display: grid; grid-template-columns: 120px 1fr 100px; gap: var(--gap-lg); padding: 22px 0; border-top: 1px solid var(--border); align-items: baseline; }
+    .log-row .meta { color: var(--muted); }
+    .log-row h3 { font-size: 19px; }
+    .log-row .pull { text-align: right; }
+  </style>
+<style>
+:root {
+ --radius:0px; --radius-lg:0px; --container:1240px;
+ --fs-h1:clamp(48px,6.4vw,88px); --fs-meta:14px;
+ --theme-space:24px; --theme-section:80px; --theme-duration:180ms;
+}
+h3,h4 {font-family:var(--font-display)}
+body {line-height:1.65}
+::selection {background:var(--accent);color:var(--bg)}
+a,button,summary {cursor:pointer}
+a:focus-visible,button:focus-visible,summary:focus-visible {outline:2px solid var(--accent);outline-offset:5px}
+a {text-underline-offset:6px}
+.topnav {position:relative;background:var(--bg);backdrop-filter:none;border-bottom:1px solid var(--border)}
+.topnav-inner {gap:var(--theme-space);padding-block:20px}
+.topnav .logo {display:inline-flex;align-items:center;min-height:44px;font-size:24px;letter-spacing:-.04em}
+.topnav nav {gap:24px}
+.topnav nav a {display:flex;align-items:center;min-height:44px;font-family:var(--font-mono);font-size:14px;color:var(--fg)}
+.topnav .logo span {color:var(--fg)!important}
+.container {width:100%}
+.grid-2-1,.grid-1-2,.grid-3 {min-width:0}
+.grid-2-1>*,.grid-1-2>*,.grid-3>*,summary>* {min-width:0}
+.hero {padding-block:64px}
+.hero-center {max-width:var(--container);text-align:left;position:relative}
+.hero-center::before {content:"";display:block;width:80px;border-top:4px double var(--accent);margin-bottom:24px}
+.hero h1 {font-size:var(--fs-h1);max-width:18ch;font-weight:400;letter-spacing:-.035em;line-height:1.08}
+.hero h1 em {font-style:normal;font-weight:400;color:var(--accent)}
+.hero .lead {max-width:60ch}
+.hero .grid-2-1 {align-items:end;gap:48px}
+.hero-cta {gap:16px}
+.eyebrow,.meta {font-family:var(--font-mono);color:var(--muted)}
+.eyebrow {font-size:13px;letter-spacing:.1em}
+.btn {font-family:var(--font-mono);font-size:14px;min-height:48px;justify-content:center;transition:background var(--theme-duration),color var(--theme-duration),border-color var(--theme-duration)}
+.btn-primary {background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700}
+.btn-secondary {background:transparent;color:var(--fg);border-color:var(--border)}
+.btn-ghost {color:var(--fg)}
+.section {padding-block:var(--theme-section);scroll-margin-top:24px}
+.section.hero {padding-block:64px}
+[data-od-id="current-role"] {position:relative;background:var(--surface);border:1px solid var(--border)!important;padding:32px!important}
+[data-od-id="current-role"]::before,[data-od-id="current-role"]::after {content:"";position:absolute;width:8px;height:8px;border:1px solid var(--muted);border-radius:50%;pointer-events:none}
+[data-od-id="current-role"]::before {top:12px;left:12px}
+[data-od-id="current-role"]::after {bottom:12px;right:12px}
+[data-od-id="current-role"] .meta {font-size:13px;letter-spacing:.12em}
+#expertise {background:var(--surface)}
+.feature.card-rule {border-top:1px solid var(--border);padding-top:24px}
+.feature h3 {font-size:28px;font-weight:400;margin:16px 0}
+.feature p {font-size:16px;line-height:1.65}
+.feature>.meta {display:block;font-size:16px}
+.log-row {grid-template-columns:176px minmax(0,1fr);gap:40px;padding:32px 0}
+.log-row>.meta {font-size:13px;letter-spacing:.04em}
+summary {list-style:none;min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:24px;transition:background var(--theme-duration)}
+summary::-webkit-details-marker {display:none}
+summary::after {content:'+';display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--border);font:24px var(--font-mono);flex:none}
+details[open] summary::after {content:'−';background:var(--fg);color:var(--bg);border-color:var(--fg)}
+details ul {padding-left:24px;max-width:70ch;color:var(--muted);margin-bottom:0}
+details li {margin:16px 0}
+.log-row h3 {font-size:28px;font-weight:400;line-height:1.25}
+#education {border-block:1px solid var(--border)}
+#education .card-rule {border-color:var(--border)}
+#education h3 {font-size:24px;font-weight:400}
+#contact {border-top:0}
+.contact-link {display:inline-block;min-height:48px;font-family:var(--font-display);font-size:clamp(24px,4vw,44px);overflow-wrap:anywhere}
+.pagefoot {padding-block:32px;font-family:var(--font-mono)}
+.pagefoot a {display:inline-flex;align-items:center;min-height:44px}
+@media(hover:hover) {
+ a:hover {color:var(--fg);text-decoration:underline}
+ .btn:hover {text-decoration:none}
+ .btn-primary:hover {background:var(--fg);border-color:var(--fg);color:var(--bg)}
+ .btn-secondary:hover {background:var(--fg);border-color:var(--fg);color:var(--bg)}
+ .btn-ghost:hover,summary:hover {background:var(--fg-soft);color:var(--fg)}
+ .topnav nav a:hover {color:var(--fg);text-decoration:underline}
+ .contact-link:hover {color:var(--fg);text-decoration:underline}
+}
+@media(min-width:1440px) {.hero h1 {max-width:19ch}}
+@media(max-width:1024px) {
+ .topnav-inner {flex-wrap:wrap;gap:8px 24px}
+ .topnav .logo {flex:1}
+ .topnav nav {order:3;width:100%;justify-content:space-between;gap:8px}
+ .hero .grid-2-1 {gap:32px}
+}
+@media(max-width:768px) {
+ :root {--gutter:24px;--theme-section:56px}
+ .grid-3,.grid-2-1,.grid-1-2 {grid-template-columns:minmax(0,1fr)}
+ .hero h1 {font-size:clamp(48px,8vw,64px);max-width:17ch}
+ .row-between {flex-wrap:wrap;gap:16px}
+ .section.hero {padding-block:48px}
+ .log-row {grid-template-columns:minmax(0,1fr);gap:16px}
+ .log-row h3 {font-size:24px}
+ .topnav nav a {font-size:13px}
+ .hero-cta {display:flex;align-items:stretch}
+ .hero-cta .btn {flex:1 1 200px}
+}
+@media(max-width:375px) {
+ :root {--gutter:20px}
+ .topnav .logo {font-size:22px}
+ .topnav .btn {padding-inline:12px}
+ .topnav nav a {font-size:12px}
+ .hero h1 {font-size:48px}
+}
+@media(prefers-reduced-motion:reduce) {*,*::before,*::after {transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+</style></head>
+<body>
+<header class="topnav" data-od-id="navigation">
+<div class="container topnav-inner">
+<a href="#home" class="logo" data-od-id="brand">Anthony Corbell<span style="color:var(--accent)">.</span></a>
+<nav aria-label="Main navigation"><a href="#expertise" data-od-id="nav-expertise">Expertise</a><a href="#experience" data-od-id="nav-experience">Experience</a><a href="#education" data-od-id="nav-education">Education</a><a href="#contact" data-od-id="nav-contact">Contact</a></nav>
+<a class="btn btn-secondary" href="Anthony-Corbell-Resume-2026.docx" download data-od-id="download-resume">Resume ↓</a>
+</div></header>
+<main id="content">
+<section class="section hero" id="home" data-od-id="introduction">
+<div class="container hero-center">
+<p class="eyebrow">Fort Smith, Arkansas / Professional portfolio</p>
+<h1 data-od-id="hero-heading">A people-first approach to <em>solving problems.</em></h1>
+<div class="grid-2-1" style="margin-top:40px">
+<div><p class="lead">I’m Anthony Corbell. My experience spans account verification, customer solutions, and creative collaboration—connecting careful analysis with clear communication.</p>
+<div class="hero-cta"><a href="#experience" class="btn btn-primary" data-od-id="explore-experience">Explore my experience ↘</a><a href="mailto:corbelltony@gmail.com" class="btn btn-ghost" data-od-id="hero-contact">Get in touch ↗</a></div></div>
+<aside style="border-top:1px solid var(--fg);padding-top:20px" data-od-id="current-role"><p class="meta" style="margin:0 0 10px">CURRENT ROLE</p><p style="font-size:20px;margin:0">Account Verification Specialist</p><p style="color:var(--muted);margin:6px 0 0">ArcBest · June 2021–Present</p></aside>
+</div>
+</div></section>
+<section class="section" id="expertise" data-od-id="expertise">
+<div class="container stack" style="gap:32px">
+<div class="row-between"><h2 data-od-id="expertise-heading">Where I add value.</h2><span class="meta">01 / EXPERTISE</span></div>
+<div class="grid-3">
+<article class="feature card-rule" data-od-id="expertise-accuracy"><span class="meta">01</span><h3>Operational accuracy</h3><p>Account and bill verification, priority reporting, and quality audits. A detail-oriented approach to getting the daily work right.</p></article>
+<article class="feature card-rule" data-od-id="expertise-communication"><span class="meta">02</span><h3>Customer communication</h3><p>Resolving conflicts, coordinating with customers and drivers, and anticipating issues before they become delays.</p></article>
+<article class="feature card-rule" data-od-id="expertise-improvement"><span class="meta">03</span><h3>Process improvement</h3><p>Identifying opportunities for automated account coding, maintaining customer bill codes, and supporting collaborative project work.</p></article>
+</div></div></section>
+<section class="section" id="experience" data-od-id="experience">
+<div class="container">
+<div class="row-between" style="margin-bottom:36px"><h2 data-od-id="experience-heading">Experience, in practice.</h2><span class="meta">02 / CAREER</span></div>
+<p class="lead" style="margin-bottom:32px">From creative production to logistics operations. Select a role to explore the details.</p>
+<article class="log-row" data-od-id="role-verification"><span class="meta">JUN 2021–PRESENT</span><details open><summary data-od-id="toggle-verification"><div><h3>Account Verification Specialist</h3><p style="margin:6px 0;color:var(--muted)">ArcBest · Fort Smith, Arkansas</p></div></summary><ul><li>Analyze and verify accounts and bills, using computer and mainframe systems to audit work for quality.</li><li>Manage completion of the daily priority report by 6 a.m. and audit priority accounts for errors.</li><li>Maintain bill codes for individual customer accounts and identify opportunities for future automated coding.</li></ul></details></article>
+<article class="log-row" data-od-id="role-customer"><span class="meta">MAY 2017–JUN 2021</span><details><summary data-od-id="toggle-customer"><div><h3>Customer Solutions Specialist</h3><p style="margin:6px 0;color:var(--muted)">ArcBest · Fort Smith, Arkansas</p></div></summary><ul><li>Resolved customer problems by phone, including late transits and appointment rescheduling.</li><li>Communicated with customers and drivers to anticipate delays and equipment issues.</li><li>Protected confidential information for blind and double-blind shipments, limiting details to the appropriate customers.</li><li>Coordinated with internal teams and external associates and maintained projects team tracking for Apex Logistics.</li></ul></details></article>
+<article class="log-row" data-od-id="role-theatre"><span class="meta">AUG 2015–MAY 2017</span><details><summary data-od-id="toggle-theatre"><div><h3>Student Worker · Department of Theatre</h3><p style="margin:6px 0;color:var(--muted)">University of Arkansas, Fort Smith</p></div></summary><ul><li>Supervised volunteers and coordinated time-sensitive theatre production projects, averaging two shows per semester.</li><li>Taught theatre skills and the creative design process, including carpentry, electrical work, and design documentation.</li></ul></details></article>
+<article class="log-row" data-od-id="role-walgreens"><span class="meta">FEB 2015–MAY 2017</span><details><summary data-od-id="toggle-walgreens"><div><h3>Beauty Advisor</h3><p style="margin:6px 0;color:var(--muted)">Walgreens · Fort Smith, Arkansas</p></div></summary><ul><li>Ordered products and maintained inventory using the store database.</li><li>Upsold promotional products in a competitive sales environment.</li><li>Maintained consistent on-time attendance and supported team scheduling needs.</li></ul></details></article>
+</div></section>
+<section class="section" id="education" data-od-id="education">
+<div class="container grid-1-2">
+<div><p class="meta">03 / FOUNDATION</p><h2 data-od-id="education-heading">Creative roots.<br>Practical thinking.</h2></div>
+<div>
+<article class="card-rule" data-od-id="education-masters"><p class="meta" style="margin-top:0">MAY 2026 · TENTATIVE, AS LISTED IN RESUME</p><h3>Master of Science in Product Innovation</h3><p style="color:var(--muted)">University of Arkansas, Fayetteville</p></article>
+<article class="card-rule" style="margin-top:32px" data-od-id="education-bachelors"><p class="meta" style="margin-top:0">MAY 2018</p><h3>Bachelor of Arts in Theatre</h3><p style="color:var(--muted)">University of Arkansas, Fort Smith</p></article>
+<div style="margin-top:36px" data-od-id="skills"><p class="meta">TOOLS &amp; STRENGTHS</p><p style="line-height:2;color:var(--muted)">Microsoft Office Suite · Sales · Leadership · Conflict resolution · Collaboration · Adaptability · Presentation skills · Attention to detail</p></div>
+</div></div></section>
+<section class="section" id="contact" data-od-id="contact" style="text-align:center;background:var(--surface)">
+<div class="container" style="max-width:800px">
+<p class="eyebrow">04 / LET’S CONNECT</p><h2 data-od-id="contact-heading">Start a conversation.</h2>
+<p class="lead" style="margin:20px auto 24px">Get in touch to discuss my experience or an opportunity to work together.</p>
+<a class="contact-link" href="mailto:corbelltony@gmail.com" data-od-id="email-contact">corbelltony@gmail.com ↗</a>
+<div class="row" style="justify-content:center;flex-wrap:wrap;margin-top:24px"><a class="btn btn-secondary" href="tel:+14794148059" data-od-id="phone-contact">(479) 414-8059</a><button class="btn btn-ghost" id="copy-email" data-od-id="copy-email">Copy email</button></div>
+<p class="meta" id="copy-status" role="status" style="min-height:20px;margin-bottom:0"></p>
+</div></section>
+</main>
+<footer class="pagefoot" data-od-id="footer"><div class="container row-between"><span>© 2026 Anthony Corbell</span><span class="meta">Fort Smith, Arkansas</span><a href="#home" data-od-id="back-to-top">Back to top ↑</a></div></footer>
+<script>
+document.getElementById('copy-email').addEventListener('click',async function(){
+ const status=document.getElementById('copy-status');
+ try {await navigator.clipboard.writeText('corbelltony@gmail.com');status.textContent='Email address copied.'}
+ catch {status.textContent='Email: corbelltony@gmail.com';}
+});
+</script>
+</body>
+</html>

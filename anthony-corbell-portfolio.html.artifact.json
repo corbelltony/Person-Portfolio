@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "anthony-corbell-portfolio.html",
+  "entry": "anthony-corbell-portfolio.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-09-10T20:07:46.813Z",
+  "updatedAt": "2026-09-10T20:07:46.813Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}
