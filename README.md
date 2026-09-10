@@ -4,7 +4,7 @@ An interactive personal portfolio for Anthony Corbell, styled as a weathered ret
 
 ## Open locally
 
-Open `anthony-corbell-portfolio.html` in a modern web browser.
+Open `index.html` in a modern web browser.
 
 ## Publish to GitHub
 

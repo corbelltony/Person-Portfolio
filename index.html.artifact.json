@@ -1,8 +1,8 @@
 {
   "version": 1,
   "kind": "html",
-  "title": "anthony-corbell-portfolio.html",
-  "entry": "anthony-corbell-portfolio.html",
+  "title": "index.html",
+  "entry": "index.html",
   "renderer": "html",
   "status": "complete",
   "exports": [
