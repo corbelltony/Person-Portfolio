@@ -16,6 +16,9 @@ Desktop.ini
 .env.*
 !.env.example
 
+# Private resume source
+Anthony-Corbell-Resume-2026.docx
+
 # Logs and temporary files
 *.log
 *.tmp
