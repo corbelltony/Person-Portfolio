@@ -522,8 +522,43 @@ details[open] summary::after{background:var(--accent);color:var(--bg);border-col
  #expertise,#experience,#education,#contact{padding-inline:20px}
  #expertise>.container,#experience>.container,#education>.container,#contact>.container{padding-inline:20px}
 }
+</style><style id="time-of-day-theme">
+/* Local-time atmospheric swap: daylight from 06:00–18:59, night otherwise. */
+:root {
+ --scene-day:var(--scene);
+ --scene-night:url('assets/wasteland/industrial-ruins-night.png');
+ --active-scene:var(--scene-day);
+ --scene-wash:linear-gradient(90deg,color-mix(in oklch,var(--bg) 36%,transparent),transparent 65%);
+ --main-scene-wash:linear-gradient(color-mix(in oklch,var(--bg) 48%,transparent),color-mix(in oklch,var(--bg) 48%,transparent));
+}
+html[data-time-theme="night"] {
+ --active-scene:var(--scene-night);
+ --bg:oklch(13% .028 255);
+ --surface:oklch(18% .03 250);
+ --fg:oklch(92% .024 98);
+ --muted:oklch(72% .026 245);
+ --border:oklch(39% .042 250);
+ --accent:oklch(80% .10 92);
+ --rust:oklch(44% .075 42);
+ --rust-light:oklch(64% .085 68);
+ --panel:color-mix(in oklch,var(--bg) 90%,transparent);
+ --iron:color-mix(in oklch,var(--bg) 72%,oklch(30% .04 250));
+ --scene-wash:linear-gradient(105deg,color-mix(in oklch,var(--bg) 82%,transparent) 0%,color-mix(in oklch,var(--bg) 46%,transparent) 58%,color-mix(in oklch,oklch(24% .08 250) 54%,transparent) 100%);
+ --main-scene-wash:linear-gradient(color-mix(in oklch,var(--bg) 78%,transparent),color-mix(in oklch,oklch(19% .07 250) 72%,transparent));
+ color-scheme:dark;
+}
+#home {background-image:var(--scene-wash),var(--active-scene)}
+main {background-image:var(--main-scene-wash),var(--active-scene)}
+html[data-time-theme="night"] #home {background-position:center 54%}
+html[data-time-theme="night"] .topnav {border-bottom-color:var(--rust-light)}
+.theme-preview {white-space:nowrap}
+html[data-theme-mode="manual"] .theme-preview {border-color:var(--accent);color:var(--accent)}
+@media (prefers-reduced-motion:no-preference) {
+ body,.topnav,#home,main,#expertise>.container,#experience>.container,#education>.container,#contact>.container {transition:background-color 300ms ease,border-color 300ms ease,color 300ms ease}
+}
 </style><style id="rust-motion-style">
 #rust-debris {position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50;contain:strict}
+html[data-time-theme="night"] #rust-debris {display:none}
 @media (hover:hover) and (pointer:fine) {
  .btn {position:relative;isolation:isolate;overflow:visible;will-change:transform}
  .btn::before,.btn::after {content:"";position:absolute;pointer-events:none;z-index:1;opacity:0}
@@ -537,6 +572,7 @@ details[open] summary::after{background:var(--accent);color:var(--bg);border-col
 }
 @media (hover:hover) and (pointer:fine) {
  body,body a,body button,body summary {cursor:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2232%22%20height%3D%2240%22%20viewBox%3D%220%200%2032%2040%22%3E%3Cpath%20d%3D%22M3%202L5%2030L11%2024L17%2036L23%2033L17%2021L28%2020L23%2015L21%2016L19%2012L16%2012Z%22%20fill%3D%22rgb(125%2C71%2C39)%22%20stroke%3D%22rgb(238%2C219%2C174)%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M6%207L8%2022L11%2018L16%2020L13%2013Z%22%20fill%3D%22rgb(189%2C121%2C66)%22%2F%3E%3Cpath%20d%3D%22M9%209L12%2013L9%2015ZM17%2026L20%2032L18%2033L15%2028ZM17%2015L20%2018L16%2018Z%22%20fill%3D%22rgb(57%2C42%2C30)%22%2F%3E%3Cpath%20d%3D%22M25%2025L29%2026L27%2029L24%2028ZM8%2033L10%2035L7%2037L6%2034Z%22%20fill%3D%22rgb(162%2C91%2C48)%22%2F%3E%3C%2Fsvg%3E") 3 2,auto}
+ html[data-time-theme="night"] body,html[data-time-theme="night"] body a,html[data-time-theme="night"] body button,html[data-time-theme="night"] body summary {cursor:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2232%22%20height%3D%2240%22%20viewBox%3D%220%200%2032%2040%22%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2218%22%20r%3D%2212%22%20fill%3D%22rgb(120%2C190%2C255)%22%20fill-opacity%3D%22.3%22%2F%3E%3Cpath%20d%3D%22M3%202L5%2030L11%2024L17%2036L23%2033L17%2021L28%2020L23%2015L21%2016L19%2012L16%2012Z%22%20fill%3D%22rgb(130%2C195%2C248)%22%20stroke%3D%22rgb(240%2C250%2C255)%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M6%207L8%2022L11%2018L16%2020L13%2013Z%22%20fill%3D%22rgb(57%2C119%2C180)%22%2F%3E%3C%2Fsvg%3E") 3 2,auto}
  body input,body textarea,[contenteditable="true"] {cursor:text}
 }
 @media(prefers-reduced-motion:reduce) {#rust-debris{display:none}}
@@ -546,6 +582,7 @@ details[open] summary::after{background:var(--accent);color:var(--bg);border-col
 <div class="container topnav-inner">
 <a href="#home" class="logo" data-od-id="brand">Anthony Corbell<span style="color:var(--accent)">.</span></a>
 <nav aria-label="Main navigation"><a href="#expertise" data-od-id="nav-expertise">Expertise</a><a href="#experience" data-od-id="nav-experience">Experience</a><a href="#education" data-od-id="nav-education">Education</a><a href="#contact" data-od-id="nav-contact">Contact</a></nav>
+<button class="btn btn-ghost theme-preview" id="theme-preview" type="button" aria-pressed="false">Night preview</button>
 <a class="btn btn-secondary" href="Anthony-Corbell-Resume-2026.docx" download data-od-id="download-resume">Resume ↓</a>
 </div></header>
 <main id="content">
@@ -601,6 +638,50 @@ document.getElementById('copy-email').addEventListener('click',async function(){
  catch {status.textContent='Email: corbelltony@gmail.com';}
 });
 </script>
+<script id="time-of-day-theme-script">
+(()=>{
+ const root=document.documentElement;
+ const preview=document.getElementById('theme-preview');
+ let timer=0;
+ function syncPreview(){
+  if(!preview)return;
+  const manual=root.dataset.themeMode==='manual';
+  preview.textContent=manual?'Return to auto':'Night preview';
+  preview.setAttribute('aria-pressed',String(manual));
+ }
+ function applyTheme(){
+  if(root.dataset.themeMode==='manual')return;
+  const now=new Date();
+  const hour=now.getHours();
+  root.dataset.timeTheme=(hour>=19||hour<6)?'night':'day';
+  root.dataset.timeThemeSource='local-time';
+  root.dataset.themeMode='auto';
+  window.dispatchEvent(new Event('themechange'));
+  syncPreview();
+  const next=new Date(now);
+  if(hour<6)next.setHours(6,0,0,0);
+  else if(hour<19)next.setHours(19,0,0,0);
+  else {next.setDate(next.getDate()+1);next.setHours(6,0,0,0);}
+  clearTimeout(timer);
+  timer=setTimeout(applyTheme,Math.max(1000,next-now+250));
+ }
+ applyTheme();
+ preview?.addEventListener('click',()=>{
+  if(root.dataset.themeMode==='manual'){
+   delete root.dataset.themeMode;
+   applyTheme();
+  }else{
+   clearTimeout(timer);
+   root.dataset.timeTheme='night';
+   root.dataset.timeThemeSource='preview';
+   root.dataset.themeMode='manual';
+   window.dispatchEvent(new Event('themechange'));
+   syncPreview();
+  }
+ });
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&root.dataset.themeMode!=='manual')applyTheme();});
+})();
+</script>
 <canvas id="rust-debris" aria-hidden="true"></canvas>
 <script id="rust-motion">
 (()=>{
@@ -611,6 +692,7 @@ document.getElementById('copy-email').addEventListener('click',async function(){
  const fine=matchMedia('(hover: hover) and (pointer: fine)');
  const tokens=getComputedStyle(document.documentElement);
  const colors=['--rust','--rust-light','--accent','--muted'].map(x=>tokens.getPropertyValue(x).trim());
+ const isNight=()=>document.documentElement.dataset.timeTheme==='night';
  let width=innerWidth,height=innerHeight,particles=[],frame=0,lastTime=0,lastScroll=scrollY,lastBurst=0,lastPointer=0;
  const maxParticles=100;
  function resize(){
@@ -620,6 +702,7 @@ document.getElementById('copy-email').addEventListener('click',async function(){
   ctx.setTransform(dpr,0,0,dpr,0,0);
  }
  function add(x,y,crumb=false){
+  if(isNight())return;
   if(particles.length>=maxParticles)return;
   const dust=!crumb&&Math.random()<.55;
   particles.push({x,y,vx:(Math.random()-.5)*(crumb?50:80),vy:20+Math.random()*65,
@@ -653,7 +736,7 @@ document.getElementById('copy-email').addEventListener('click',async function(){
  addEventListener('resize',resize,{passive:true});
  addEventListener('scroll',()=>{
   const now=performance.now(),distance=Math.abs(scrollY-lastScroll);lastScroll=scrollY;
-  if(reduced.matches||document.hidden||distance<1||now-lastBurst<65)return;
+  if(isNight()||reduced.matches||document.hidden||distance<1||now-lastBurst<65)return;
   lastBurst=now;
   const count=Math.min(16,4+Math.floor(distance/20));
   for(let i=0;i<count;i++){
@@ -666,14 +749,14 @@ document.getElementById('copy-email').addEventListener('click',async function(){
  },{passive:true});
  addEventListener('pointermove',e=>{
   const now=performance.now();
-  if(!fine.matches||reduced.matches||e.pointerType!=='mouse'||now-lastPointer<85)return;
+  if(isNight()||!fine.matches||reduced.matches||e.pointerType!=='mouse'||now-lastPointer<85)return;
   lastPointer=now;
   add(e.clientX+12,e.clientY+22,true);
   start();
  },{passive:true});
  document.querySelectorAll('.btn').forEach(button=>{
   button.addEventListener('pointerenter',e=>{
-   if(reduced.matches||e.pointerType!=='mouse')return;
+   if(isNight()||reduced.matches||e.pointerType!=='mouse')return;
    const rect=button.getBoundingClientRect();
    for(let i=0;i<24;i++){
     const edge=Math.floor(Math.random()*4);
@@ -685,6 +768,7 @@ document.getElementById('copy-email').addEventListener('click',async function(){
   });
  });
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});
+ addEventListener('themechange',()=>{if(isNight())stop()});
  reduced.addEventListener('change',stop);
  resize();
 })();

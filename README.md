@@ -2,6 +2,8 @@
 
 An interactive personal portfolio for Anthony Corbell, styled as a weathered retro-industrial wasteland.
 
+The page automatically shifts between a daylight and moonlit night treatment using the visitor's local time (night runs from 7 PM to 6 AM). A reversible Night preview control lets visitors view the secondary treatment at any time.
+
 ## Open locally
 
 Open `index.html` in a modern web browser.
